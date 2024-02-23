@@ -11,7 +11,7 @@ export const isAuthenticated = async (req, res, next) => {
     const { email: paramEmail, password } = req.body;
 
     if (!paramEmail || !password) {
-      throw new Error("invalid username or password");
+      res.send("invalid username or password");
     }
 
     const exactUser = users.find(({ email }) => email === paramEmail);
@@ -19,14 +19,14 @@ export const isAuthenticated = async (req, res, next) => {
     const passwordCheck = compareHash(password, exactUser.password);
 
     if (!exactUser) {
-      throw new Error("wrong username or password");
+      res.send("wrong username or password");
     }
     if (passwordCheck) {
       req.user = exactUser;
       next();
       return;
     }
-    throw new Error("wrong username or password");
+    res.send("wrong username or password");
   } catch (err) {
     res.status(400).send(err.message);
   }
